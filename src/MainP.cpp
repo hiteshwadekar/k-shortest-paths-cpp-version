@@ -15,13 +15,15 @@
 #include "Graph.h"
 #include "DijkstraShortestPathAlg.h"
 #include "YenTopKShortestPathsAlg.h"
+#include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC */
+#include <ctime>
 
 using namespace std;
 
 
 void testDijkstraGraph(int src, int dst)
 {
-	Graph* my_graph_pt = new Graph("/home/hitesh-dev/k-shortest-paths-cpp-version/data/test_50");
+	Graph* my_graph_pt = new Graph("/home/gr-dev/k-shortest-paths-cpp-version/data/test_50");
 	DijkstraShortestPathAlg shortest_path_alg(my_graph_pt);
 	BasePath* result =
 		shortest_path_alg.get_shortest_path(
@@ -31,16 +33,20 @@ void testDijkstraGraph(int src, int dst)
 
 void testYenAlg(int src, int dst, int kpath)
 {
-	Graph my_graph("/home/hitesh-dev/k-shortest-paths-cpp-version/data/test_50");
-
+	Graph my_graph("/home/gr-dev/k-shortest-paths-cpp-version/data/test_500");
 	YenTopKShortestPathsAlg yenAlg(my_graph, my_graph.get_vertex(src),
 		my_graph.get_vertex(dst));
 
-	int i=0;
+	int i=1;
 	if(kpath>0)
 	{
 		vector<BasePath*> result_list;
+		clock_t begin = clock();
+		cout << "\nCalculating K shortest path Start time ->  "<< (double)begin/CLOCKS_PER_SEC;
 		yenAlg.get_shortest_paths(my_graph.get_vertex(src),my_graph.get_vertex(dst),kpath,result_list);
+		clock_t end = clock();
+		cout << "\nCalculating K shortest path End time ->  "<< (double)end/CLOCKS_PER_SEC;
+		cout <<"\n";
 		for(vector<BasePath*>::const_iterator pos=result_list.begin();
 				pos!=result_list.end(); ++pos)
 		{
@@ -48,6 +54,9 @@ void testYenAlg(int src, int dst, int kpath)
 			(*pos)->PrintOut(cout);
 			i++;
 		}
+		double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+		cout << "\nIt took Yan's k path " << elapsed_secs << "(seconds)" <<endl;
+
 	}
 	else
 	{
